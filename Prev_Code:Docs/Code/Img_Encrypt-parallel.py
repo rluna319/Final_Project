@@ -58,13 +58,13 @@ class encryptionThread (threading.Thread):
       self.encryptionMode = encryptionMode
    def run(self):
       if self.encryptionMode == 0: 
-        print ("Starting encryption on chunk " + str(self.threadID) + "\n")
+        # print ("Starting encryption on chunk " + str(self.threadID) + "\n")
         encrypt_chunk(self.chunk, self.key, self.tile)
-        print ("Finished encrypting chunk " + str(self.threadID) + "\n")
+        # print ("Finished encrypting chunk " + str(self.threadID) + "\n")
       else:
-        print ("Starting decryption on chunk " + str(self.threadID) + "\n")
+        # print ("Starting decryption on chunk " + str(self.threadID) + "\n")
         decrypt_chunk(self.chunk, self.key, self.tile)
-        print ("Finished decrypting chunk " + str(self.threadID) + "\n")
+        # print ("Finished decrypting chunk " + str(self.threadID) + "\n")
             
 
 def create_image(cyphertext, tile, mode):
@@ -188,7 +188,8 @@ def setup_directories():
 def label_and_save(image, label, filename, save_dir):
     d = ImageDraw.Draw(image)
     d.text((28,36), label, font=ImageFont.truetype(font=str(myFont), size = 80), fill=(255,0,0))
-    image.save(str(save_dir / filename))
+    im = image.convert('RGB')
+    im.save(str(save_dir / filename))
 
 # Create the images from the bytearray and save them to their respective directories for logging
 def join_tiles_and_save(i_data, t_data, mode):
@@ -223,6 +224,9 @@ def print_results(num_images, e_times, d_times):
 
 # main driver code
 def main():
+
+    timerm = time.time()
+
     # Print the number of
     # CPUs in the system
     print("Thread count:", threadCount)
@@ -291,7 +295,10 @@ def main():
         
         bar.update(t)
     print("\n\n")
-
+    
+    extime = round(time.time() - timerm, 4)
+    print(f'overall time = {extime}')
+    
     # output the results
     print_results(len(images), enc_times, dec_times)
 
